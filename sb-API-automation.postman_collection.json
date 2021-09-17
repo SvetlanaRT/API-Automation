@@ -1,0 +1,610 @@
+{
+	"info": {
+		"_postman_id": "8bb0da1d-17fb-4ecc-a7b9-9c88fcc25f5f",
+		"name": "sb-API-automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "URL-status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"console.log(response['status']);\r",
+							"\r",
+							"pm.test(\"Name ofTest: Status is 'OK'\", () => {\r",
+							"\r",
+							"    pm.expect(response.status).to.eql(\"OK\");\r",
+							"\r",
+							"}); \r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://simple-books-api.glitch.me/status",
+					"protocol": "https",
+					"host": [
+						"simple-books-api",
+						"glitch",
+						"me"
+					],
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listAllBooks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {  \r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-Max}}/books",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test_01_singleBook&GlobaliD_Creat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Name ofTest is: Status code is 200\", () => {  //build in test of postman \r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json(); //there only fiction book in response(\"Params \"filter)\r",
+							"\r",
+							"const FictionBooks=response.filter((book) => book.available === true);   // fors to FAIL -> book.available ===1111\r",
+							"\r",
+							"const book = FictionBooks[0];\r",
+							"\r",
+							"if(book){\r",
+							"pm.globals.set(\"GlobalFictionBookID\", book.id);  \r",
+							"}\r",
+							"\r",
+							"pm.test(\"Name ofTest is: Book found\", ()=>{\r",
+							"    pm.expect(book).to.be.an('object');\r",
+							"    pm.expect(book.available).to.be.true;\r",
+							"    pm.expect(book.available).to.eql(true); \r",
+							"    pm.expect(book.type).to.eql(\"fiction\"); \r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-Max}}/books?type=fiction",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"books"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "fiction"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "singleBookGlobalID_Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 200\", () => {  //build in test of postman \r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"const nonFictionBooks=response.filter((book) => book.available === true); // \r",
+							"//printing\r",
+							"console.log(nonFictionBooks[0].id)  \r",
+							"//creating Global var \r",
+							"pm.globals.set(\"Global-non-FictBookID\", nonFictionBooks[0].id);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-Max}}/books?type=non-fiction",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"books"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "non-fiction",
+							"description": "must be turn on"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "singleBookByGlobaliD",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",() => {  \r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AccessTokenMax}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-Max}}/books/:idBook",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"books",
+						":idBook"
+					],
+					"variable": [
+						{
+							"key": "idBook",
+							"value": "{{GlobalFictionBookID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "singleBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-Max}}/books/:idBook",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"books",
+						":idBook"
+					],
+					"variable": [
+						{
+							"key": "idBook",
+							"value": "{{Global-non-FictBookID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OrderBookGlobaliDCreate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {  \r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"pm.globals.set(\"GlobalOrderID\", response.orderId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AccessTokenMax}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"bookId\": 3,\r\n  \"customerName\": \"Maxim\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL-Max}}/orders",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OrderBookByGlobaliD",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {  \r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AccessTokenMax}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"bookId\": {{Global-non-FictBookID}},\r\n  \"customerName\": \"Maxim\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL-Max}}/orders",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteOrder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {  \r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AccessTokenMax}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL-Max}}/orders/:idToDELETE",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"orders",
+						":idToDELETE"
+					],
+					"variable": [
+						{
+							"key": "idToDELETE",
+							"value": "{{GlobalOrderID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "singleOrderafterDelete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Name ofTest:Book not found after Deleting\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AccessTokenMax}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-Max}}/orders/:orderID",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"orders",
+						":orderID"
+					],
+					"variable": [
+						{
+							"key": "orderID",
+							"value": "{{GlobalOrderID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test_02_BookInStock",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",() => {  \r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json(); //there only fiction book in response(\"Params \"filter)\r",
+							"\r",
+							"\r",
+							"pm.test(\"Name ofTest: Book in Stocke\",() => { \r",
+							"\r",
+							"     pm.expect(response['current-stock']).to.be.above(0); \r",
+							"});\r",
+							"postman.setNextRequest(null); // null for stop \"name of request  to skip\"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AccessTokenMax}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-Max}}/books/:idBook",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"books",
+						":idBook"
+					],
+					"variable": [
+						{
+							"key": "idBook",
+							"value": "{{GlobalFictionBookID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RegisterClient(getToken)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {  \r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n    \"clientName\": \"Maxim\",\r\n    \"clientEmail\": \"Mexim@example.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL-Max}}/api-clients",
+					"host": [
+						"{{URL-Max}}"
+					],
+					"path": [
+						"api-clients"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL-Max",
+			"value": "https://simple-books-api.glitch.me"
+		},
+		{
+			"key": "AccessTokenMax",
+			"value": "--"
+		}
+	]
+}
